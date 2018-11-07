@@ -26,6 +26,8 @@ class QuerySet(object):
 
     def __init__(self, data):
         self.data = data
+        self._sticky_filter = False
+        self.query = query
 
     def filter(self, *args, **kwargs):
         """Filters data using the lookup parameters
@@ -96,6 +98,15 @@ class QuerySet(object):
     def __iter__(self):
         for d in self.data:
             yield d
+
+    def order_by(self, *field_names):
+        """Return a new QuerySet instance with the ordering changed."""
+        assert self.query.can_filter(), \
+            "Cannot reorder a query once a slice has been taken."
+
+        return self
+
+
 
 
 # QuerySet given an alias for backward compatibility
